@@ -30,21 +30,17 @@ refresh_token () {
 }
 
 authenticate () {
-   local resp=$(
-      curl -X POST "https://api.sensorpush.com/api/v1/oauth/authorize" \
-         -fSs -H "Accept: application/json" -H "Content-Type: application/json" \
-         -d "{\"email\": \"$1\", \"password\": \"$2\"}"
-   )
-   echo "$resp" | jq -r .authorization
+   curl -X POST "https://api.sensorpush.com/api/v1/oauth/authorize" \
+      -fSs -H "Accept: application/json" -H "Content-Type: application/json" \
+      -d "{\"email\": \"$1\", \"password\": \"$2\"}" \
+   | jq -r .authorization
 }
 
 authorize () {
-   local resp=$(
-      curl -X POST "https://api.sensorpush.com/api/v1/oauth/accesstoken" \
-         -fSs -H "Accept: application/json" -H "Content-Type: application/json" \
-         -d "{\"authorization\": \"$1\"}"
-   )
-   echo "$resp" | jq -r .accesstoken
+   curl -X POST "https://api.sensorpush.com/api/v1/oauth/accesstoken" \
+      -fSs -H "Accept: application/json" -H "Content-Type: application/json" \
+      -d "{\"authorization\": \"$1\"}" \
+   | jq -r .accesstoken
 }
 
 fetch_sensors () {
