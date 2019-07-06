@@ -33,7 +33,7 @@ authenticate () {
    local resp=$(
       curl -X POST "https://api.sensorpush.com/api/v1/oauth/authorize" \
          -fSs -H "Accept: application/json" -H "Content-Type: application/json" \
-         -d "{\"email\":\"$1\",\"password\": \"$2\"}"
+         -d "{\"email\": \"$1\", \"password\": \"$2\"}"
    )
    echo "$resp" | jq -r .authorization
 }
@@ -42,7 +42,7 @@ authorize () {
    local resp=$(
       curl -X POST "https://api.sensorpush.com/api/v1/oauth/accesstoken" \
          -fSs -H "Accept: application/json" -H "Content-Type: application/json" \
-         -d "{\"authorization\":\"$1\"}"
+         -d "{\"authorization\": \"$1\"}"
    )
    echo "$resp" | jq -r .accesstoken
 }
@@ -68,9 +68,9 @@ format_slack_message () {
       local last_observation=$(echo "$2" | jq -r ".sensors[""\"$sensor_id\"""][0]")
       local temperature=$(echo "$last_observation" | jq -r .temperature)
       local humidity=$(echo "$last_observation" | jq -r .humidity)
-      local uts=$(timestamp_to_epoch "$(echo "$last_observation" | jq -r .observed)")
+      local utc_ts=$(timestamp_to_epoch "$(echo "$last_observation" | jq -r .observed)")
       local now=$(date +%s)
-      local time_ago=$(time_ago_in_words "$now" "$uts")
+      local time_ago=$(time_ago_in_words "$now" "$utc_ts")
 
       echo -e "*$name*"
       echo -e "\tTemperature: $temperature°F"
