@@ -7,6 +7,7 @@ main () {
    # Default to env vars
    local email="${1:-$SENSORPUSH_EMAIL}"
    local password="${2:-$SENSORPUSH_PASSWORD}"
+   local channel="${3:-$SLACK_CHANNEL}"
 
    # Get a temporary api token
    local token=$(refresh_token "$email" "$password")
@@ -19,7 +20,7 @@ main () {
    local message=$(format_slack_message "$sensors" "$samples")
 
    # Post results to slack
-   ./slack chat send "$message" slack-integration
+   ./slack chat send "$message" "$channel"
 }
 
 refresh_token () {
