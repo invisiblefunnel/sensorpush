@@ -1,4 +1,3 @@
-#!/bin/bash
 # shellcheck disable=SC2155
 
 set -e
@@ -20,7 +19,7 @@ main () {
   local message=$(format_slack_message "$sensors" "$samples")
 
   # Post results to slack
-  ./slack chat send "$message" "$channel"
+  /slack chat send "$message" "$channel"
 }
 
 refresh_token () {
@@ -59,7 +58,14 @@ fetch_samples () {
 }
 
 format_slack_message () {
-  for sensor_id in $(echo "$1" | jq -j 'keys | join(" ")'); do
+  local sensor_ids=$(echo $1 | jq -j '
+    to_entries
+    | sort_by(.value.name)
+    | map(.key)
+    | join(" ")
+  ')
+
+  for sensor_id in $sensor_ids; do
     local name=$(echo "$1" | jq -r ".[""\"$sensor_id\"""].name")
     local last_observation=$(echo "$2" | jq -r ".sensors[""\"$sensor_id\"""][0]")
     local temperature=$(echo "$last_observation" | jq -r .temperature)
