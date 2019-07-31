@@ -1,1 +1,0 @@
-scheduler: bash sensorpush
